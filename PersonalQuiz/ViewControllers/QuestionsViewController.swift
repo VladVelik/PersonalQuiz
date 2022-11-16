@@ -40,11 +40,14 @@ final class QuestionsViewController: UIViewController {
         questions[questionIndex].answers
     }
     
-    
-
     override func viewDidLoad() {
         super.viewDidLoad()
         updateUI()
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard let resultVC = segue.destination as? ResultViewController else { return }
+        resultVC.results = answerChosen
     }
 
     // MARK: - IBActions
@@ -53,7 +56,7 @@ final class QuestionsViewController: UIViewController {
         
         let currenetAnswer = currentAnswers[currentIndex]
         answerChosen.append(currenetAnswer)
-        
+
         nextQuestion()
     }
     
@@ -79,24 +82,16 @@ final class QuestionsViewController: UIViewController {
 // MARK: - User Interface
 extension QuestionsViewController {
     private func updateUI() {
-        // Hide stacks
         for stackView in [singleStackView, multipleStackView, rangedStackView] {
             stackView?.isHidden = true
         }
         
-        // get current question
         let currentQuestion = questions[questionIndex]
-        
-        // set current question for question label
         questionLabel.text = currentQuestion.title
         
-        // set progress for questionProgressView
         let totalProgress = Float(questionIndex) / Float(questions.count)
-        
-        // set progress for questionProgressView
         questionProgressView.setProgress(totalProgress, animated: true)
         
-        // set navigation title
         title = "Вопрос № \(questionIndex + 1) из \(questions.count)"
         
         showCurrentAnswers(for: currentQuestion.type)
